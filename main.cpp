@@ -4,7 +4,6 @@
 //#include <locale.h> pouze muj PC
 using namespace std;
 
-
 void Menu (){
 
 char menu;
@@ -98,7 +97,6 @@ do{
     case 'C':
         BackMenu = true;
         do{
-        cout<< "| Bersberker - Malý, silný, rychlý avšak málo vydrží --|60 HP|5 defense|\n";
         cout<< "------------CLASSY-----------\n";
         cout<< "| -W- Warrior\n| -R- Ranger\n| -M- Mage\n| -G- Rogue\n| -P- Priest\n| -K- Menu\n\n| -> ";
         cin>> ClassMenu;
@@ -174,7 +172,6 @@ do{
             }
         }while(BackMenu == true);
         break;
-        // později dodelam
     case 'K':
         exit(0);
     default:
@@ -187,33 +184,264 @@ do{
 
 
 
-int main(){
-//setlocale(LC_ALL, "Czech"); pouze muj PC
-SetConsoleOutputCP(CP_UTF8);
+struct Vesnice{
+
+            int obchod;
+            bool MageShop = true;
+            bool MeleeShop;
+            bool RangeShop;
+            bool Priestshop;
+            bool BardShop;
+            bool RougueShop;
+            bool LVL1;
+            bool LVL2;
+            bool LVL3;
+            bool LVL4;
+
+//Pole---------------------------
+
+string utokyMelee [4]{"Seknutí", "Bodnutí", "Těžký útok", "Dvojitý seknutí"};
+string utokyRange [4]{"Střela", "Přesná střela", "Zápalná střela", "Světlice"};
+string utokyMagic [6]{"Magická střela", "Výbuch", "Ohnivý kruh", "Elektrický výboj", "Blesk z nebes", "Duha radosti"};
+string utokyOther [5]{"Písnička vítěztví", "Ukolébavka", "Rozžhavený hudebník", "Obvnova harmonie", "Poslední báseň"};
+
+string obyvatele [10]{"\nStařec\n| - Místní legenda mluví o motýlovi neboli jak ostatnní říkájí... Skáza  s barvami krásy\n", "\nDobrodruh\n| - Už jsem toho potkal dost tak buď opatrný, ale jedna holčina Abigail s její kytkou se ztratila\n| - Dokážeš ji najít\n", "\nZlobr\n| - HUGRRR... GRRRRR\n| - HARGGGG...URGGGG\n", "\nBanda trpaslíků\n| - Dáš si pivo ?? Neboslouchej ho... Šetři zlaťáky, budou se ti hodit\n", "\nVíla\n| - Chceš pomoct?? Ráda pomůžu.\n| - Skoč se k ohništi ohřát a uzdravit se, ale pozor na kapsáře\n", "\nTrol\n| - HUUUUUURGGG DEJ SI POZOR NA ČAS\n| - HRGRGGG ČAS JE ZDRÁDNÝ\n", "\nElf\n| - Luk sice vypadát slabě, ale v správných rukou je to smrtelná zbraň\n", "\nGolemite\n| - KÁMENNN, HODNĚ VYDRŽÍM, ALE JSEM POMALEJ\n| - I TAK KÁMENN\n", "\nRytíř\n| - Dlouhý boj mě dočista vyčepal\n| - Buď pŘpravený a nepodceň to\n", "\nMág\n| - Dej si pozor ať ti nedojde mana\n| - Může to být tvůj konec"};
+
+
+
+};
+
+
+struct Player{
+// Hráčké staty------------------------
+            int hp;
+            int df;
+            int mana;
+            int dmg;
+            string name;
+            int gld;
+            int lvl;
+            int xp;
+            bool poison;
+            bool fire; 
+            bool blind;
+            bool conf;
+            bool frez;
+            bool sleep;
+            int critorigin;
+            int speedorigin;
+            int specialorigin;
+            float hitchanceorigin;
+            
+// Staty útoků---------------------------    
+            float crit = 0;
+            float speed = 0;
+            float special = 0;
+            float hitchance = 0;
+
+// Staty útoků---------------------------
+            int poisonTimer = 0;
+            int fireTimer = 0;
+            int blindTimer = 0;
+            int confTimer = 0;
+            int frezTimer = 0;
+            int sleepTimer = 0;
+            
+            int DamageTake = 0;
+            float DamageFinal = 0;
+// Mosntrer schonpsti (pusobnost na hrace)
+            bool pierce;
+            };
+
+void CheckStatsPlayer (Player &p1){
+
+    
+    if (p1.df > 0 && p1.DamageTake > 0 && p1.pierce == false){
+            p1.DamageTake = p1.DamageTake / p1.df;   
+        }
+
+
+
+    if (p1.fire ==true && p1.frez == true){
+            cout<< "Jsi zároveň spálený a zmrzlý, takže jsi rozmrzl\n";
+            p1.frez = false;
+        }
+    if (p1.DamageTake > 0){
+            p1.DamageFinal = p1.DamageTake / p1.df;
+            }
+    if (p1.fire == true && p1.fireTimer > 0){
+            p1.DamageFinal = p1.DamageFinal + 2;
+            p1.fireTimer--;
+            cout<< "Jsi spálený, takže dostáváš o 2 více poškození\n";
+            }
+    if (p1.poison == true && p1.poisonTimer > 0){
+            p1.DamageFinal = p1.DamageFinal + 2;
+            p1.poisonTimer--;
+            cout<< "Jsi otrávený, takže dostáváš o 2 více poškození\n";
+            }
+    if (p1.blind == true && p1.blindTimer > 0){
+            cout<< "Jsi slepý, takže máš o 20% větší šanci minout\n";
+            p1.blindTimer--;
+            p1.hitchance = p1.hitchance - (p1.hitchance / 100 * 20);
+            }
+            else if (p1.blind == false){
+            p1.hitchance = p1.hitchanceorigin;
+            }
+    if (p1.conf == true && p1.confTimer > 0){
+            cout<< "Jsi zmatený, máš o 20 menší rychlost\n";
+            p1.speed = p1.speed - 20;
+            p1.confTimer--;      
+            }
+    else if (p1.conf == false){
+            p1.speed = p1.speedorigin;
+            }
+    if (p1.frez == true && p1.frezTimer > 0){
+            cout<< "Jsi zmrzlý, máš 20% šanci minout a dostáváš o 2 více poškození\n";
+            p1.frezTimer--;
+            }
+    if (p1.sleep == true && p1.sleepTimer > 0){
+            cout<< "Jsi uspaný, nemůžeš utočit\n";
+            p1.sleepTimer--;
+            }
+    if (p1.hp <= 0){
+        cout<< "Tady tvoje cesta končí... Došli ti životy";
+        exit(0);
+        }
+
+            
+
+            
+            if (p1.fireTimer < 0){
+                p1.fireTimer = 0;
+                }
+    if (p1.poisonTimer < 0){
+        p1.poisonTimer = 0;
+        }
+        if (p1.blindTimer < 0){
+            p1.blindTimer = 0;
+        }
+    if (p1.confTimer < 0){
+        p1.confTimer = 0;
+        }
+    if (p1.frezTimer < 0){
+        p1.frezTimer = 0;
+        }
+    if (p1.sleepTimer < 0){
+        p1.sleepTimer = 0;
+        }
+    }
+
+void vesniceINGAME(Player &p1, Vesnice &v1){
+char vesniceMenu;
+char trhMenu;
+int ohnisteTimer = 0;
+
+int R1 = rand() % 10;
+int R2 = rand() % 10;
+int R3 = rand() % 10;
+
+do{
+if (R1 == R2){
+    R2 = rand() % 10;
+    }
+if (R2 == R3){
+    R3 = rand() % 10;
+    }
+if (R1 == R3){
+    R1 = rand() % 10;
+    }
+}while(R1 == R2 || R2 == R3 || R1 == R3);
+
+    cout <<"\n|-----------------------------------------------------------------|\n";
+    cout << "|---------------------------VESNICE-------------------------------|\n";
+    cout << "|-----------------------------------------------------------------|\n\n";
+ do{   
+    cout<< "| -T- Trh\n| -H- Hospoda\n| -O- Ohniště\n| -P- Pokracovat\n\n| -> ";
+    cin >> vesniceMenu;
+    switch (vesniceMenu){
+        case 'T':
+            cout<< "\nTrh je místo, kde můžeš nakupovat věci, ale pozor!!\nKaždý den se nabídka mění, takže pokud něco chceš, kup si to\n\n";
+                if(v1.MageShop == true){
+                    do{
+                        cout<< "| -S- Svitky kouzel\n| -L lektvary\n| -O- Ostatní\n| -P- Pokračovat\n\n| -> ";
+                        cin >> trhMenu;
+                        switch(trhMenu){
+                            case'S':
+                                cout<<endl;
+                                for (int i = 0; i < 6; i++){
+                                    cout<< "| Svitek kouzla "<< i + 1 << ": " << v1.utokyMagic[i] << "\n";
+                                    }
+                                    cout<< "\n";
+                                break;
+                            case'L':
+                                break;
+                        }
+                    }while(trhMenu != 'P');
+                }
+            break;
+        case 'H':
+            cout<< "| - Hospoda je místo, kde můžeš získat informace od místních obyvatel\n\n";
+            _sleep(5000);
+            cout<< "---Potkal jsi--- " <<v1.obyvatele[R1] << "\n";
+            _sleep(5000);
+            cout<< "---Potkal jsi--- " <<v1.obyvatele[R2] << "\n";
+            _sleep(5000);
+            cout<< "---Potkal jsi--- " <<v1.obyvatele[R3] << "\n\n\n";
+            _sleep(5000);
+            break;
+        case 'O':
+            cout<< "Ohniště je místo, kde můžeš odpočívat a léčit se, ale pozor!!\n| - Pokud budeš odpočívat příliš dlouho, může se stát, že tě někdo napadne\n| - Můžeš tam potkat i nějaké ty obyvatele\n";
+            break;
+        case 'P':
+            cout<< "Pokracuješ ve své cestě...\n";
+            break;
+        default:
+            cout<< "Neplatná hodnota\n";
+        }
+    }while(vesniceMenu != 'P');
+    
+
+
+}
+
+    int main(){
+    //setlocale(LC_ALL, "Czech"); pouze muj PC
+    SetConsoleOutputCP(CP_UTF8);
+    srand(time(0));
+//------------------------------------------------------------------------------------//
+    
+    
+    
+
+
+
 //------------------------------------------------------------------------------------//
 
-string jmeno;
+Player p1;
+Vesnice v1;
+
+
 
 
 
 //------------------------------------------------------------------------------------//
-
-
-
-
 
 cout << "\n|-------------------------------------------------|\n";
 cout << "|--------------- VÍTEJ VE HŘE .... ---------------|\n";
 cout << "|-------------------------------------------------|\n";
 
-Menu();
+//Menu();
+vesniceINGAME(p1,v1);
+
+
+
 
 cout<< "\n-----------------------------------------------------------------|\n";
 cout<< "-----------------------------------------------------------------|\n\n";
 cout<< "| - Teďka jsi na začátku příběhu a jako správný RPG hráč si musíš vybrat svoji classu a jméno\n| - Máš před sebou nabídku, ale pozor!!\n| - Každá classa má jiné schopnosti, což má svoje + ale i -\n\n";
 
 cout<< "Zadej své jméno, které bude na konci znát celý svět\n| -> ";
-cin >>jmeno;
-cout<< jmeno;
+cin >>p1.name;
+cout<< p1.name;
 
 }
