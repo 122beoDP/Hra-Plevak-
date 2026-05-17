@@ -225,9 +225,9 @@ struct Player
     bool frez;
     bool sleep;
     // Origin Staty (Classa)
-    int hp;
-    int df;
-    int mana;
+    int hp = 0;
+    int df = 1;
+    int mana = 1000;
     int dmg;
     int dmgOrigin = 0;
     int manaorigin = 0;
@@ -337,20 +337,60 @@ struct Enemy{
     int speedEnemy = 0;
     bool Enemy_Aktivni = false;
 
+    //Player Final Utok
+    int EnemyDamageTake = 0;
+    int EnemyDamageFinal = 0;
+    int EnemyCrit = 100;
+    int EnemySpecialChance = 100;
+    int EnemyHitChance = 0;
+
+    // Debufs
+    bool EnemyPoison = false;
+    bool EnemyFire = false;
+    bool EnemyBlind = false;
+    bool EnemyConf = false;
+    bool EnemyFrez = false;
+    bool EnemySleep = false;
+
+    int EnemyPoisonTimer = 0;
+    int EnemyFireTimer = 0;
+    int EnemyBlindTimer = 0;
+    int EnemyConfTimer = 0;
+    int EnemyFrezTimer = 0;
+    int EnemySleepTimer = 0;
+
+
+};
+
+struct FalseL{
+bool level_1 = false;
+bool level_2 = false;
+bool level_3 = false;
+bool level_4 = false;
+bool level_5 = false;
+bool level_6 = false;
+bool level_7 = false;
+bool level_8 = false;
+bool level_9 = false;
+bool level_10 = false;
 
 };
 
 void CheckStatsPlayer(Player &p1);
 void PowerFire(Player &p1, Vesnice &v1, char &KoupitEnchantMenu);
-void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1);
+void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1);
 void PowerFreeze(Player &p1, Vesnice &v1, char &KoupitEnchantMenu);
 void PowerPoison(Player &p1, Vesnice &v1, char &KoupitEnchantMenu);
 void vesniceINGAME(Player &p1, Vesnice &v1);
 void VyberClass(Player &p1);
 void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1);
 void PlayerSpeedDebufs(Player &p1);
-void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1);
+void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1);
 void PlayerUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1);
+void Levelfalse(FalseL &f1);
+void VyberEnemy(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1);
+void Levelfalse(FalseL &f1);
+void Loading();
 
 int main()
 {
@@ -358,9 +398,9 @@ int main()
     SetConsoleOutputCP(CP_UTF8);
     srand(time(0));
     //------------------------------------------------------------------------------------//
-
+    
     //------------------------------------------------------------------------------------//
-
+    FalseL f1;
     Player p1;
     Vesnice v1;
     Schopnosti u1;
@@ -369,23 +409,25 @@ int main()
 
     cout << "\n|-------------------------------------------------|\n";
     cout << "|--------------- VÍTEJ VE HŘE .... ---------------|\n";
-    cout << "|-------------------------------------------------|\n";
+    cout << "|-------------------------------------------------|\n\n";
 
     Menu();
     // vesniceINGAME(p1, v1);
 
     cout << "\n-----------------------------------------------------------------|\n";
     cout << "-----------------------------------------------------------------|\n\n";
-    cout << "| - Teďka jsi na začátku příběhu a jako správný RPG hráč si musíš vybrat svoji classu a jméno\n| - Máš před sebou nabídku, ale pozor!!\n| - Každá classa má jiné schopnosti, což má svoje + ale i -\n\n";
-
-    cout << "Zadej své jméno, které bude na konci znát celý svět\n| -> ";
+    cout << "| - Teďka jsi na začátku příběhu a jako správný RPG hráč si musíš vybrat svoji classu a jméno\n| - Máš před sebou nabídku, ale pozor!!\n| - Každá classa má jiné schopnosti, což má svoje + ale i -";
+    Loading();
+    cout << "| - Zadej své jméno, které bude na konci znát celý svět\n| -> ";
     cin >> p1.name;
+    Loading();
+
     VyberClass(p1);
 
-    PlayerUtok(p1, v1, u1, e1);
 
-   // e1.Honey_bee = true;
-   // EnemyUtok(p1, v1, u1, e1);
+    f1.level_1 = true;
+    FinalEncounter(p1, v1, u1, e1, f1);
+
 }
 
 
@@ -405,7 +447,7 @@ void CheckStatsPlayer(Player &p1)
     }
     if (p1.DamageTake > 0)
     {
-        p1.DamageFinal = p1.DamageTake / p1.df;
+        p1.DamageFinal = p1.DamageTake;
     }
     if (p1.fire == true && p1.fireTimer > 0)
     {
@@ -465,6 +507,8 @@ void CheckStatsPlayer(Player &p1)
     {
         p1.sleepTimer = 0;
     }
+
+
 }
 
 void PlayerSpeedDebufs(Player &p1){
@@ -545,7 +589,7 @@ void PowerFire(Player &p1, Vesnice &v1, char &KoupitEnchantMenu)
     }
 }
 
-void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1)
+void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1)
     {
     
         int SniperRand = rand() % 5;
@@ -560,17 +604,17 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1)
         }
         else if (p1.Bersberker == true)
         {
-            p1.DamageFinal /= 2;
-            u1.DamageGiveFinal *= 2;
+            p1.DamageTake /= 2;
+            e1.EnemyDamageTake *= 2;
         }
         else if (p1.Gladiator == true)
         {
             u1.SpeedFinal /= 2;
-            u1.DamageGiveFinal *= 1.5;
+            e1.EnemyDamageTake *= 1.5;
         }
         else if (p1.Paladin == true)
         {
-            p1.DamageFinal /= 3;
+            p1.DamageTake /= 3;
         }
     
         //Ranger---------------------
@@ -580,41 +624,41 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1)
         }
         else if (p1.Sniper == true)
         {
-            u1.DamageGiveFinal *= 2;
+            e1.EnemyDamageTake *= 2;
             if (SniperRand == 3)
             {
-                u1.DamageGiveFinal = 0;
+                e1.EnemyDamageTake = 0;
             }
         }
         else if (p1.Huntsman)
         {
             if (HuntsmanRand == 0)
             {
-                u1.DamageGiveFinal = 0;
+                e1.EnemyDamageTake = 0;
             }
             else if (HuntsmanRand == 1)
             {
-                u1.DamageGiveFinal *= 0.1;
+                e1.EnemyDamageTake *= 0.1;
             }
             else if (HuntsmanRand == 2)
             {
-                u1.DamageGiveFinal *= 0.5;
+                e1.EnemyDamageTake *= 0.5;
             }
             else if (HuntsmanRand == 3)
             {
-                u1.DamageGiveFinal *= 1;
+                e1.EnemyDamageTake *= 1;
             }
             else if (HuntsmanRand == 4)
             {
-                u1.DamageGiveFinal *= 1.5;
+                e1.EnemyDamageTake *= 1.5;
             }
             else if (HuntsmanRand == 5)
             {
-                u1.DamageGiveFinal *= 2;
+                e1.EnemyDamageTake *= 2;
             }
             else if (HuntsmanRand == 6)
             {
-                u1.DamageGiveFinal *= 3;
+                e1.EnemyDamageTake *= 3;
             }
     
         //Mage---------------------
@@ -641,7 +685,7 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1)
         {
             if (DuelistRand == 3)
             {
-                p1.DamageFinal = 0;
+                p1.DamageTake = 0;
                 cout << "Útoku si se vyhnul";
             }
         }
@@ -1222,7 +1266,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
 
 
 
-do{
+
 
     if(e1.Field_goblin == true){
         if(e1.Enemy_Aktivni == false){
@@ -1442,21 +1486,12 @@ do{
         p1.DamageTake = 50;
         
     }
-
-    cout<< p1.DamageFinal<<endl;
-    
-    ClassSchopnosti(p1, v1, u1);
-    CheckStatsPlayer(p1);
-
-    cout<< p1.DamageFinal;
-
-}while(e1.hpEnemy > 0);
-    cout<< "\n______________________________________\n";
-    cout<< "---------Porazil jsi enemáka----------\n";
+    cout<<"| << Enemy má "<< e1.hpEnemy<<" hp\n";
+    cout<<"| << Enemy dává " <<p1.DamageTake<<" damage\n\n";
 
 }
 
-void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
+void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1){
 
     e1.Enemy_Aktivni = false;
 
@@ -1465,9 +1500,16 @@ void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
     p1.mana = p1.manaorigin;
     p1.hitchance = p1.hitchanceorigin;
 
-    
+
+    VyberEnemy(p1,v1,u1,e1,f1);
+
+
+    do{
     EnemyUtok(p1,v1,u1,e1);
-    
+    PlayerUtok(p1,v1,u1,e1);
+    ClassSchopnosti(p1, v1, u1, e1);
+    CheckStatsPlayer(p1);
+    e1.EnemyDamageFinal = e1.EnemyDamageTake;
     
 
 
@@ -1478,14 +1520,51 @@ void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
     
     
     if(e1.speedEnemy > p1.speed){
-    cout<< "menší speed";
+    cout<< "|---Menší speed---|";
     
         if(p1.DamageFinal > 0){
             p1.hpBattle -= p1.DamageFinal;
+   
+            cout<< "\n| - Enemák ti dal " << p1.DamageFinal << " poškození\n";
+            cout<< "| - Máš " << p1.hpBattle << " hp\n\n";
         }
-    
-    
-        if (p1.hp <= 0)
+        if (p1.hpBattle <= 0)
+        {
+            p1.hp = 0;
+            cout << "Tady tvoje cesta končí... Došli ti životy";
+            exit(0);
+        }
+
+        if (e1.EnemyDamageFinal > 0){
+            e1.hpEnemy -= e1.EnemyDamageFinal;
+            cout<< "\n| - Dáváš enemákovi " << e1.EnemyDamageFinal << " poškození\n";
+            if(e1.hpEnemy < 0){
+                e1.hpEnemy = 0;
+            }
+            cout<< "| - Enemák má " << e1.hpEnemy << " hp\n\n";
+        }
+    }
+
+    else if (e1.speedEnemy < p1.speed){
+    cout<< "|---Větsi speed---|";
+            if(e1.EnemyDamageFinal > 0){
+            e1.hpEnemy -= e1.EnemyDamageFinal;
+            if(e1.hpEnemy < 0){
+                e1.hpEnemy = 0;
+            }
+            cout<< "\n| - Dáváš enemákovi " << e1.EnemyDamageFinal << " poškození\n";
+            if(e1.hpEnemy < 0){
+                e1.hpEnemy = 0;
+            }
+            cout<< "| - Enemák má " << e1.hpEnemy << " hp\n\n";
+        }
+            if(p1.DamageFinal > 0){
+            p1.hpBattle -= p1.DamageFinal;
+   
+            cout<< "\n| - Enemák ti dal " << p1.DamageFinal << " poškození\n";
+            cout<< "| - Máš " << p1.hpBattle << " hp\n\n";
+        }
+        if (p1.hpBattle <= 0)
         {
             p1.hp = 0;
             cout << "Tady tvoje cesta končí... Došli ti životy";
@@ -1493,37 +1572,50 @@ void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
         }
     }
 
-    else if (e1.speedEnemy < p1.speed){
-    cout<< "vetsi speed";
-            if(p1.DamageFinal > 0){
-            p1.hpBattle -= p1.DamageFinal;
-        }
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
         if (e1.hpEnemy <= 0)
         {
             e1.hpEnemy = 0;
             cout << "Vítězíš, ber goldy a pokračuj dál";
         }
+    }while(e1.hpEnemy>0);
     }
-
-
-
-
-
-
-
-}
 
 void PlayerUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
   
 int Vyber_utoku;
 char Vyber;
 bool Vybrano = false;
+int critChance100 = rand() % 100 + 1;
+int hitChance100 = rand() % 100 + 1;
+int specialChance100 = rand() % 100 + 1;
+int confChance = rand() % 7;
+int BlidnChance = rand() % 2 + 1;
 
 
 
+int blesk = 0;
 do{
+
+    confChance = rand() % 5;
+    critChance100 = rand() % 100 + 1;
+    hitChance100 = rand() % 100 + 1;
+    specialChance100 = rand() % 100 + 1;
+
+
+
     cout<< "\n| - Vyber si utok, který chces použít";
 
     if(p1.Warrior == true){
@@ -1535,19 +1627,31 @@ do{
         switch(Vyber_utoku){
             case 1:
                 cout << "\n\n| 1 |Seknutí| - Běžný útok >> Speed 20, Crit 10%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 20;
+                e1.EnemyCrit = 10;
                 Vybrano = true;
                 break;
-
             case 2:
                 cout << "\n| 2 |Bodnutí| - Bodnutí nožíkem >> Speed 40, Crit 30%, Damage 5\n\n";
+                e1.EnemyDamageTake = 5;
+                e1.speedEnemy = 40;
+                e1.EnemyCrit = 30;
                 Vybrano = true;
                 break;
             case 3:
                 cout << "\n| 3 |Těžký útok| - Možnost zaůtočit silně >> Speed 5, Crit 5%, Damage 30\n\n";
+                e1.EnemyDamageTake = 30;
+                e1.speedEnemy = 5;
+                e1.EnemyCrit = 5;
                 Vybrano = true;
                 break;
             case 4:
                 cout << "\n| 4 |Dvojitý seknutí| - Dvojitý seknutí, šance minout >> Speed 10, Crit 10%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 10;
+                e1.EnemyCrit = 10;
+                e1.EnemyHitChance = 50;
                 Vybrano = true;
                 break;
             default:
@@ -1563,18 +1667,44 @@ do{
         switch(Vyber_utoku){
             case 1:
                 cout << "\n\n| 1 |Střela| - Běžný sťřela >> Speed 30, Crit 10%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 30;
+                e1.EnemyCrit = 10;
                 Vybrano = true;
                 break;
             case 2:
                 cout << "\n| 2 |Přesná střela| - Bodnutí nožíkem >> Speed 10, Crit 40%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 10;
+                e1.EnemyCrit = 40;
                 Vybrano = true;
                 break;
             case 3:
                 cout << "\n| 3 |Zapalná střela| - Prostě zapálí >> Speed 20, Crit 10%, Damage 10 + (2/s x 5)\n\n";
+                e1.EnemyDamageTake = 10;
+                e1.speedEnemy = 20;
+                e1.EnemyCrit = 10;
+                if(e1.EnemyFire == false){
+                    e1.EnemyFire = true;
+                    e1.EnemyFireTimer = 5;
+                }
+                else if(e1.EnemyFire == true){
+                    e1.EnemyFireTimer = 5;
+                }
                 Vybrano = true;
                 break;
             case 4:
                 cout << "\n| 4 |Světlice| - Možnost oslepit nepřítele, šance minout >> Speed 5, Crit/Damage 0, Special Chance 60%\n\n";
+                e1.EnemyDamageTake = 0;
+                e1.speedEnemy = 5;
+                e1.EnemyCrit = 0;
+                if(specialChance100 <= 60){
+                    e1.EnemyBlind = true;
+                    e1.EnemyBlindTimer = 3;
+                }
+                else if(specialChance100 > 60){
+                    cout<< "Nezvládl jsi oslepit nepřítele\n";
+                }
                 Vybrano = true;
                 break;
             default:
@@ -1591,23 +1721,89 @@ do{
         switch(Vyber_utoku){
             case 1:
                 cout << "\n\n| 1 |Magická střela| - Běžný sťřela >> Speed 30, Crit 15%, Damage 15, Mana 20\n\n";
-                Vybrano = true;
+                if(p1.mana >= 20){
+                    e1.EnemyDamageTake = 15;
+                    e1.speedEnemy = 30;
+                    e1.EnemyCrit = 15;
+                    p1.mana -= 20;
+                    Vybrano = true;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             case 2:
                 cout << "\n| 2 |Výbuch| - Silný útok, který omračí i nepřítele >> Speed 10, Crit 10%, Damage 60, Mana 80\n\n";
-                Vybrano = true;
+                if(p1.mana >= 80){
+                    e1.EnemyDamageTake = 60;
+                    e1.speedEnemy = 10;
+                    e1.EnemyCrit = 10;
+                    p1.mana -= 80;
+                    Vybrano = true;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             case 3:
                 cout << "\n| 3 |Ohnivý kruh| - Kruh tvořený ohněm >> Speed 50, Crit 0%, Damage 5 + (2/s x 5), Mana 30\n\n";
-                Vybrano = true;
+                if(p1.mana >= 30){
+                    e1.EnemyDamageTake = 5;
+                        if(e1.EnemyFire == false){
+                            e1.EnemyFire = true;
+                            e1.EnemyFireTimer = 5;
+                            Vybrano = true;
+                        }
+                        else if(e1.EnemyFire == true){
+                            e1.EnemyFireTimer = 5;
+                            Vybrano = true;
+                        }
+                    e1.speedEnemy = 50;
+                    e1.EnemyCrit = 0;
+                    p1.mana -= 30;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             case 4:
                 cout << "\n| 4 |Elektrický výboj| - Elektrická rána s šancí na omráčení nepřítele >> Speed 20, Crit 10%, Damage 25, Mana 45\n\n";
-                Vybrano = true;
+                if(p1.mana >= 45){
+                    e1.EnemyDamageTake = 25;
+                    e1.speedEnemy = 20;
+                    e1.EnemyCrit = 10;
+                    if(specialChance100 <= 30){
+                        e1.EnemyConf = true;
+                        e1.EnemyConfTimer = 3;
+                        Vybrano = true;
+                    }
+                    else if(specialChance100 > 30){
+                        cout<< "Nezvládl jsi omráčit nepřítele\n";
+                        Vybrano = true;
+                    }
+                    p1.mana -= 45;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             case 5:
                 cout << "\n| 5 |Blesk z nebes| - Blesk s šancí 1/5 na multihit >> Speed 5, Damage 40, Mana 80\n\n";
-                Vybrano = true;
+                if(p1.mana >= 80){
+                    e1.EnemyDamageTake = 40;
+                    e1.speedEnemy = 5;
+                    do{
+                    if(blesk = rand() % 5 + 1 == 3){
+                        e1.EnemyDamageTake += 40;
+                        cout<< "Blesk z nebes zasáhl znovu!\nDamage = " << e1.EnemyDamageTake << "\n";
+                    }
+                    }while(blesk == 3);
+                    p1.mana -= 80;
+                    Vybrano = true;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             default:
                 cout<< "Neplatná hodnota";
@@ -1622,18 +1818,36 @@ do{
         switch(Vyber_utoku){
             case 1:
                 cout << "\n\n| 1 |Seknutí| - Běžný útok >> Speed 20, Crit 10%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 20;
+                e1.EnemyCrit = 10;
                 Vybrano = true;
                 break;
             case 2:
                 cout << "\n| 2 |Bodnutí| - Bodnutí nožíkem >> Speed 40, Crit 30%, Damage 5\n\n";
+                e1.EnemyDamageTake = 5;
+                e1.speedEnemy = 40;
+                e1.EnemyCrit = 30;
                 Vybrano = true;
                 break;
             case 3:
                 cout << "\n| 3 |Těžký útok| - Možnost zaůtočit silně, možnost minout >> Speed 5, Crit 5%, Damage 30\n\n";
+                e1.EnemyDamageTake = 30;
+                e1.speedEnemy = 5;
+                e1.EnemyCrit = 5;
+                e1.EnemyHitChance = 70;
+                if(hitChance100 >= e1.EnemyHitChance){
+                    cout<< "Nezvládl jsi těžký útok, minul jsi!\n";
+                    e1.EnemyDamageTake = 0;
+                }
+                
                 Vybrano = true;
                 break;
             case 4:
                 cout << "\n| 4 |Dvojitý seknutí| - Dvojitý seknutí >> Speed 10, Crit 10%, Damage 15\n\n";
+                e1.EnemyDamageTake = 15 * 2;
+                e1.speedEnemy = 10;
+                e1.EnemyCrit = 10;  
                 Vybrano = true;
                 break;
             default:
@@ -1649,19 +1863,79 @@ do{
         switch(Vyber_utoku){
             case 1:
                 cout << "\n\n| 1 |Duha z nebes| - Sejme všechny negativní efekty a dá 20 hp >> Speed 0, Damage/Crit = 0, Special Chance 50%, Mana 30\n\n";
+                if(p1.mana >= 30){
+                p1.poison = false;
+                p1.conf = false;
+                p1.frez = false;
+                p1.sleep = false;
+                p1.blind = false;
+                p1.fire = false;
+                if(specialChance100 <= 50){
+                    p1.hpBattle += 30;
+                    cout<< "Duha z nebes ti dala 20 hp a odstranila negativni efekty\n";
+                    if(p1.hpBattle > p1.hp){
+                        p1.hpBattle = p1.hp;
+                    }
+                }
+                else if(specialChance100 > 50){
+                    cout<< "Duha z nebes odstranila pouze negativni efekty\n";
+                    
+                }
                 Vybrano = true;
+            }
+            else{
+                    cout << "\nNedostatek many!\n";
+                }
+                e1.EnemyCrit = 0;
                 break;
             case 2 :
                 cout << "\n| 2 |Zdravotní péče| - Uzdraví se a dopní životy o 20 HP s šancí na dopnění o 10 více >> Speed 0, Special Chance 50%, Mana 30\n\n";
+                if(p1.mana >= 30){
+                if(specialChance100 <= 50){
+                    p1.hpBattle += 20;
+                    cout<< "Zdravotní péče ti dala 20 hp\n";
+                    if(p1.hpBattle > p1.hp){
+                        p1.hpBattle = p1.hp;
+                    }
+                }
+                else if(specialChance100 > 50){
+                    p1.hpBattle += 30;
+                    cout<< "Zdravotní péče ti dala 30 hp\n";
+                    if(p1.hpBattle > p1.hp){
+                        p1.hpBattle = p1.hp;
+                    }
+                }
                 Vybrano = true;
+                }else{
+                    cout << "\nNedostatek many!\n";
+                }
+                critChance100 = 0;
                 break;
             case 3:
                 cout << "\n| 3 |Magická střela| - Běžný sťřela >> Speed 30, Crit 15%, Damage 15, Mana 20\n\n";
-                Vybrano = true;
+                if(p1.mana >= 20){
+                    e1.EnemyDamageTake = 15;
+                    e1.speedEnemy = 30;
+                    e1.EnemyCrit = 15;
+                    p1.mana -= 20;
+                    Vybrano = true;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             case 4:
                 cout << "\n| 4 |Výbuch| - Silný útok, který omračí i nepřítele >> Speed 5, Crit 10%, Damage 60, Mana 80\n\n";
-                Vybrano = true;
+                if(p1.mana >= 80){
+                    e1.EnemyDamageTake = 60;
+                    e1.speedEnemy = 5;
+                    e1.EnemyCrit = 10;
+                    p1.mana -= 80;
+                    Vybrano = true;
+                }
+                else{
+                    cout << "\nNedostatek many!\n";
+                }
                 break;
             default:
                 cout<< "Neplatná hodnota";  
@@ -1676,23 +1950,68 @@ do{
         cin >> Vyber_utoku;
         switch(Vyber_utoku){
             case 1:
-                cout << "\n\n| 1 |Písnička vítězství - Písnička udeří a udělá damage >> Speed 20, Damage 15, Crit = 20%\n\n";
+                cout << "\n\n| 1 |Písnička vítězství - Písnička udeří a udělá damage >> Speed 20, Damage 15, Crit 20%\n\n";
+                e1.EnemyDamageTake = 15;
+                e1.speedEnemy = 20;
+                e1.EnemyCrit = 20;
                 Vybrano = true;
                 break;
             case 2 :
                 cout << "\n | 2 |Ukolébavka| - Uzdraví se a dopní životy o 20 HP s šancí na dopnění o 10 více >> Speed 5, Damage/Crit 0, Special Chance 50%\n\n";
+                    if(specialChance100 <= 50){
+                        p1.hpBattle += 20;
+                        cout<< "Ukolébavka ti dala 20 hp\n";
+                        if(p1.hpBattle > p1.hp){
+                            p1.hpBattle = p1.hp;
+                        }
+                    }
+                    else if(specialChance100 > 50){
+                        p1.hpBattle += 30;
+                        cout<< "Ukolébavka ti dala 30 hp\n";
+                        if(p1.hpBattle > p1.hp){
+                            p1.hpBattle = p1.hp;
+                        }
+                    }
+                    e1.EnemyCrit = 0;
                 Vybrano = true;
                 break;
             case 3:
                 cout << "\n| 3 |Rozžhavený hudeník| - Hraje tak dobře a rychle, že zapálí enemáka >> Speed 10, Damage 20 + (2/s x 10)\n\n";
+                e1.EnemyDamageTake = 20;
+                e1.speedEnemy = 10;
+                if(e1.EnemyFire == false){
+                    e1.EnemyFire = true;
+                    e1.EnemyFireTimer = 5;
+                }
+                else if(e1.EnemyFire == true){
+                    e1.EnemyFireTimer = 5;
+                }
                 Vybrano = true;
                 break;
             case 4:
                 cout << "\n| 4 |Obnova hramonie| - Nastaví rovnováhu, což mu přida 20 hp >> Speed 0, Damage/Crit = 0, Special Chance 80%\n\n";
+                if(specialChance100 <= 80){
+                    p1.hpBattle += 20;
+                    cout<< "Obnova harmonie ti dala 20 hp\n";
+                    if(p1.hpBattle > p1.hp){
+                        p1.hpBattle = p1.hp;
+                    }
+                }
+                else if(specialChance100 > 80){
+                    cout<< "Obnova harmonie selhala... přeřekl jsi se botee, nedostala jsi žádné hp\n";
+                }
                 Vybrano = true;
                 break;
             case 5:
                 cout << "\n| 5 |Poslední báseň| - Poslední pokus aby tento GOAT otočil celou hru >> Speed 100, Special effect - set 1 HP/set max HP, Special Chance 50/50\n\n";
+                if(specialChance100 <= 50){
+                    p1.hpBattle = 1;
+                    cout<< "Poslední báseň selhala... máš smůlu lol skill issue, máš 1 hp\n";
+                }
+                else if(specialChance100 > 50){
+                    p1.hpBattle = p1.hp;
+                    cout<< "Poslední báseň uspěla!! Máš všechny své hp zpět\n";
+                }
                 Vybrano = true;
                 break;
             default:
@@ -1700,5 +2019,245 @@ do{
         }
     }
 }while(Vybrano == false);
+
+
+
+    //Crit Chance-------------------------------
+
+    if(critChance100 <= e1.EnemyCrit){
+        cout<< "\n| - Kritický zásah!!\n";
+        e1.EnemyDamageTake *= 2;
+    }
+
+    //Hit Chance-------------------------------
+
+    if(e1.EnemyHitChance > 0){
+        if(hitChance100 <= e1.EnemyHitChance){
+            cout<< "\n| - Útok trefil 2x!\n";
+            e1.EnemyDamageTake *= 2;
+        }
+    }
+    //Fire Effect-------------------------------
+
+    if(e1.EnemyFire == true){
+        cout<< "\n| - Enemák hoří, bere 5 poškození\n";
+        e1.EnemyDamageTake += 5;
+        e1.EnemyFireTimer -= 1;
+        if(e1.EnemyFireTimer <= 0){
+            e1.EnemyFire = false;
+            cout<< "\n| - Oheň uhasl\n";
+        }
+    }
+    //Blind Effect-------------------------------
+
+    if(e1.EnemyBlind == true){
+        cout<< "\n| - Enemák je slepý, má sníženou přesnost\n";
+        if (BlidnChance == 1){
+            cout<< "\n| - Slepota způsobila, že enemák minul útok\n";
+            e1.EnemyDamageTake = 0;
+        }
+        e1.EnemyBlindTimer -= 1;
+        if(e1.EnemyBlindTimer <= 0){
+            e1.EnemyBlind = false;
+            cout<< "\n| - Enemák už není slepý\n";
+        }
+    }
+    //Conf Effect---------------------------------
+
+    if(e1.EnemyConf == true){
+        cout<< "\n| - Enemák je zmatený, má šanci se zranit\n";
+        if (confChance == 2){
+            cout<< "\n| - Zmatek způsobil, že enemák se zranil\n";
+            e1.EnemyDamageTake += 5;
+        }
+        e1.EnemyConfTimer -= 1;
+        if(e1.EnemyConfTimer <= 0){
+            e1.EnemyConf = false;
+            cout<< "\n| - Enemák už není zmatený\n";
+        }
+    }
+}
+
+void VyberEnemy(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1){
+
+int EnemyRand = rand() % 3 + 1;
+
+
+    if(f1.level_1 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.Field_goblin = true;
+                cout<<"-------TVUJ ENEMY JE... Field goblin\n";
+                break;
+            case 2:
+                e1.Honey_bee = true;
+            cout<<"-------TVUJ ENEMY JE... Honey bee\n";
+                break;
+            case 3:
+                e1.Grassy_bear = true;
+                cout<<"-------TVUJ ENEMY JE... Grassy bear\n";
+                break;
+        }
+        
+    }
+    else if (f1.level_2 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.Whispering_wisp = true;
+                cout<<"-------TVUJ ENEMY JE... Whispering wisp\n";
+                break;
+            case 2:
+                e1.Pink_fairy = true;
+                cout<<"-------TVUJ ENEMY JE... Pink fairy\n";
+                break;
+            case 3:
+                e1.Prismatic_lacewing = true;
+                cout<<"-------TVUJ ENEMY JE... Prismatic lacewing\n";
+                break;
+        }
+    }
+     else if (f1.level_3 == true){
+        Levelfalse(f1);
+        e1.MBOSS_Abigail = true;
+        cout<<"-------TVUJ MINIBOSS JE... Abigail\n";
+        }
+
+     else if (f1.level_4 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.SharpFeather_Harpy = true;
+                cout<<"-------TVUJ ENEMY JE... SharpFeather Harpy\n";
+                break;
+            case 2:
+                e1.Cloud_Cruiser = true;
+                cout<<"-------TVUJ ENEMY JE... Cloud Cruiser\n";
+                break;
+            case 3:
+                e1.Storm_vyvern = true;
+                cout<<"-------TVUJ ENEMY JE... Storm vyvern\n";
+                break;
+        }
+     }
+      else if (f1.level_5 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.Frozen_Stalker = true;
+                cout<<"-------TVUJ ENEMY JE... Frozen stalker\n";
+                break;
+            case 2:
+                e1.Ice_Elemental = true;
+                cout<<"-------TVUJ ENEMY JE... Ice elemental\n";
+                break;
+            case 3:
+                e1.Glacial_breaker= true;
+                cout<<"-------TVUJ ENEMY JE... Glacial breaker\n";
+                break;
+        }
+      }
+       else if (f1.level_6 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.Sand_worm = true;
+                cout<<"-------TVUJ ENEMY JE... Sand worm\n";
+                break;
+            case 2:
+                e1.Mummified_traveller = true;
+                cout<<"-------TVUJ ENEMY JE... Mummified traveller\n";
+                break;
+            case 3:
+                e1.SandStorm_Elemental = true;
+                cout<<"-------TVUJ ENEMY JE... SandStorm elemental\n";
+                break;
+        }
+       }
+       else if (f1.level_7 == true){
+        Levelfalse(f1);
+            do{
+                EnemyRand = rand() % 2 + 1;
+            }while(EnemyRand < 1 || EnemyRand > 2);
+        switch(EnemyRand){
+            case 1:
+                e1.MBOSSCrystal_bat = true;
+                cout<<"-------TVUJ MINIBOSS JE... Crystal bat\n";
+                break;
+            case 2:
+                e1.MBOSSPrism_golem = true;
+                cout<<"-------TVUJ MINIBOSS JE... Prism golem\n";
+                break;
+        }
+       }
+       else if (f1.level_8 == true){
+        Levelfalse(f1);
+        switch(EnemyRand){
+            case 1:
+                e1.Relic_Guardian = true;
+                cout<<"-------TVUJ ENEMY JE... Relic guardian\n";
+                break;
+            case 2:
+                e1.Archive_ghost = true;
+                cout<<"-------TVUJ ENEMY JE... Archive ghost\n";
+                break;
+            case 3:
+                e1.FlamedEyes_statue = true;
+                cout<<"-------TVUJ ENEMY JE... FlamedEyes statue\n";
+                break;
+        }
+         }
+        else if (f1.level_9 == true){
+        Levelfalse(f1);
+        e1.FBOSSChronarch = true;
+}
+        else if (f1.level_10 == true){
+        Levelfalse(f1);
+        e1.SecretBoss_Empres_of_Light = true;
+    }
+}
+
+void Loading(){
+
+    int LoadingI = 0;
+
+        cout<<"\n\nLoading";
+    do{
+    LoadingI++;
+    _sleep(500);
+    for(int i = 0; i<3; i++){
+        cout<<".";
+        _sleep(500);
+    }
+    cout << "\b\b\b";
+    cout<< "   ";
+    cout<< "\b\b\b";
+    _sleep(500);
+    }while(LoadingI != 2);
+    cout<<".";
+    _sleep(500);
+        cout<<".";
+    _sleep(500);
+        cout<<".";
+    _sleep(500);
+    cout<<"\b\b\b\b\b\b\b\b\b\b"<<"          \n";
+    LoadingI = 0;
+
+}
+
+void Levelfalse(FalseL &f1){
+
+
+    f1.level_1 = false;
+    f1.level_2 = false;
+    f1.level_3 = false;
+    f1.level_4 = false;
+    f1.level_5 = false;
+    f1.level_6 = false;
+    f1.level_7 = false;
+    f1.level_8 = false;
+    f1.level_9 = false;
+    f1.level_10 = false;
 
 }
