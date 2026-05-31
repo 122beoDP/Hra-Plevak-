@@ -1139,7 +1139,7 @@ void vesniceINGAME(Player &p1, Vesnice &v1)
                         {
                             cout << LEDOVA_SVETLA<<"\n | -M- Mana -50- 20 goldů\n\n"<<RESET;
                         }
-                        cout << CERVENA<<" | -S- Síla -2- 20 goldů\n"<<MODRA <<"| -O- Obrana -2- 20 goldů\n"<<ZELENA<<" | -Z- Životy -10- 20 goldů\n"<<TEMNA_ORANZOVA<<" | -C- Šance na kritický zásah -2%- 20 goldů\n | -P- Pokračovat\n\n| -> ";
+                        cout << CERVENA<<" | -S- Síla -2- 20 goldů\n"<<MODRA <<" | -O- Obrana -2- 20 goldů\n"<<ZELENA<<" | -Z- Životy -10- 20 goldů\n"<<TEMNA_ORANZOVA<<" | -C- Šance na kritický zásah -2%- 20 goldů\n"<<RESET<<" | -P- Pokračovat\n\n| -> ";
                         cin >> KoupitMenu;
                         switch (KoupitMenu)
                         {
