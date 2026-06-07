@@ -121,28 +121,28 @@ void Menu()
                 switch (ClassMenu)
                 {
                 case 'W':
-                    cout << "\n| Knight - Nebojácný rytíř se zakladními staty --|100 HP|20 defense|\n";
-                    cout << "| Bersberker - Malý, silný, rychlý avšak málo vydrží --|60 HP|5 defense|\n";
-                    cout << "| Gladiator - Obrvoský silný gladiátor, jenže za cenu rychlosti --|150 HP|35 defense|\n";
-                    cout << "| Paladin - Obrovská výdrž v boji, ale útok trochu postrádá --|200 HP|50 defense|\n\n";
+                    cout << "\n| Knight - Nebojácný rytíř se zakladními staty --|100 HP|\n";
+                    cout << "| Bersberker - Malý, silný, rychlý avšak málo vydrží --|80 HP|\n";
+                    cout << "| Gladiator - Obrvoský silný gladiátor, jenže za cenu rychlosti --|150 HP|\n";
+                    cout << "| Paladin - Obrovská výdrž v boji, ale útok trochu postrádá --|200 HP|\n\n";
                     break;
                 case 'R':
-                    cout << "\n| Archer - Zapálený lučištník s kapkou elfský krve v sobě -- |90 HP|5 defense|\n";
-                    cout << "| Sniper - Oddstrelovač s obrovskou palnou střelou skoro bez možností minout, ale dlouho přebíjí -- |80 HP|10 defense|\n";
-                    cout << "| Huntsman - Lovec s pořádnout brokovnicí, ale docela gamble útok je o tom kolik toho trefí -- |110 HP|15 defense|\n\n";
+                    cout << "\n| Archer - Zapálený lučištník s kapkou elfský krve v sobě -- |90 HP|\n";
+                    cout << "| Sniper - Oddstrelovač s obrovskou palnou střelou skoro bez možností minout, ale dlouho přebíjí -- |80 HP||\n";
+                    cout << "| Huntsman - Lovec s pořádnout brokovnicí, ale docela gamble útok je o tom kolik toho trefí -- |110 HP|\n\n";
                     break;
                 case 'M':
-                    cout << "\n| Sorrencer - Mág všeho druhu, dokáže se naučit kterýkoli magický útok -- |100 HP|0 defense| Mana 100|\n";
+                    cout << "\n| Sorrencer - Mág všeho druhu, dokáže se naučit kterýkoli magický útok -- |100 HP| Mana 100|\n";
                     cout << "| Iluzinosta - Tvoří iluze, který nemají za účel přímí útok, ale dostat nepřítele do stavu bezmoci -- |120 HP|0 defense| Mana 100|\n";
-                    cout << "| Pyromancer - Vládce ohně, sice se nekáže naučit všechnu magii, ale má TOP ohnivou -- |100 HP|10 defense| Mana 110|\n\n";
+                    cout << "| Pyromancer - Vládce ohně, sice se nekáže naučit všechnu magii, ale má TOP ohnivou -- |100 HP| Mana 110|\n\n";
                     break;
                 case 'G':
-                    cout << "\n| Assasin - Pán rychlosti, spoléhá na rychlé útoky s vysokou šancí na kritický zásah -- |80 HP|5 defense|\n";
-                    cout << "| Duelist - Absolutně nemožné duelistu zasáhnout, všemu se vyhne -- |70 HP|5 defense|\n\n";
+                    cout << "\n| Assasin - Pán rychlosti, spoléhá na rychlé útoky s vysokou šancí na kritický zásah -- |80 HP||\n";
+                    cout << "| Duelist - Absolutně nemožné duelistu zasáhnout, všemu se vyhne -- |70 HP|\n\n";
                     break;
                 case 'P':
-                    cout << "\n| Healer - Neni až tak moc silný, ale muže být pomalu nesmrtelný -- |100 HP|5 defense| Mana 200|\n";
-                    cout << "| Bart - Absolutní GOATTT, dokáže porazit final bosse pomocí hudby... respekt -- |100 HP|0 defense|\n\n";
+                    cout << "\n| Healer - Neni až tak moc silný, ale muže být pomalu nesmrtelný -- |100 HP| Mana 200|\n";
+                    cout << "| Bart - Absolutní GOATTT, dokáže porazit final bosse pomocí hudby... respekt -- |100 HP|\n\n";
                     break;
                 case 'K':
                     BackMenu = false;
@@ -231,8 +231,8 @@ struct Player
     // Hráčké staty------------------------
     string name;
     int gld = 0;
-    int lvl;
-    int xp;
+    int lvl = 1;
+    int xp = 0;
     bool poison;
     bool fire;
     bool blind;
@@ -241,7 +241,7 @@ struct Player
     bool sleep;
     // Origin Staty (Classa)
     int hp = 0;
-    int df = 1;
+    int df = 0;
     int mana = 0;
     int dmg = 0;
     int dmgOrigin = 0;
@@ -285,6 +285,8 @@ struct Player
     float special = 0;
     float hitchance = 0;
 
+    bool DuelistSchopnost = false;
+
     // Staty útoků---------------------------
     int poisonTimer = 0;
     int fireTimer = 0;
@@ -305,6 +307,9 @@ struct Player
     int PowerPoisonDmg = 6;
     bool PowerFreeze = false;
     int PowerFreezeDmg = 4;
+
+
+    bool Damage0 = false;
 };
 
 struct Schopnosti
@@ -406,7 +411,9 @@ void Levelfalse(FalseL &f1);
 void VyberEnemy(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1);
 void Levelfalse(FalseL &f1);
 void Loading();
+void Level_system(Player &p1);
 void Enemyfalse(Enemy &e1);
+void Final_boss(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1);
 
 int main()
 {
@@ -444,10 +451,10 @@ int main()
     cin >> p1.name;
     Loading();
 
-    VyberClass(p1);
-    p1.hpBattle = p1.hp;
-    //Level 1
 
+    VyberClass(p1);
+    //Level 1
+    p1.hpBattle = p1.hp;
 
     f1.level_1 = true;
     FinalEncounter(p1, v1, u1, e1, f1);
@@ -456,6 +463,7 @@ int main()
     p1.gld += Goldplus;
 
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     
@@ -467,6 +475,7 @@ int main()
     p1.gld += Goldplus;
 
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     //Level 3 (2M)
@@ -475,6 +484,7 @@ int main()
     FinalEncounter(p1, v1, u1, e1, f1);
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
     
     Goldplus = rand() % 20 + 1;
@@ -487,6 +497,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     //Level 4 - Miniboss
@@ -501,6 +512,7 @@ int main()
     p1.gld += Goldplus;
 
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     //Vesnice
@@ -517,6 +529,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
     
     //Level 6 (2M)
@@ -528,6 +541,7 @@ int main()
     p1.gld += Goldplus;
 
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     f1.level_5 = true;
@@ -537,6 +551,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     //Level 7
@@ -548,6 +563,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     f1.level_6 = true;
@@ -557,6 +573,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     //Vesnice
@@ -573,6 +590,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     f1.level_7 = true;
@@ -582,9 +600,13 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
-    //Level 9 (2M)
+    //Level 9 (3M)
+
+    cout<< CERVENA<< "\n| - Dolnili se ti životy :D\n"<<RESET;
+    p1.hpBattle = p1.hp;
 
     f1.level_8 = true;
     FinalEncounter(p1, v1, u1, e1, f1);
@@ -593,6 +615,7 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
 
     f1.level_8 = true;
@@ -602,51 +625,28 @@ int main()
     p1.gld += Goldplus;
     
     cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
+    Level_system(p1);
     Loading();
+
+    f1.level_8 = true;
+    FinalEncounter(p1, v1, u1, e1, f1);
+
+    Goldplus = rand() % 50 + 1;
+    p1.gld += Goldplus;
 
     //Vesnice
 
     vesniceINGAME(p1, v1);
     Loading();
 
-    //Level 10 (3M)
+    //Level 10 FINAL BOSS)
 
-    f1.level_9 = true;
-    FinalEncounter(p1, v1, u1, e1, f1);
+    Final_boss(p1, v1, u1, e1, f1);
 
-    Goldplus = rand() % 50 + 1;
-    p1.gld += Goldplus;
-    
-    cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
-    Loading();
 
-    f1.level_9 = true;
-    FinalEncounter(p1, v1, u1, e1, f1);
 
-    Goldplus = rand() % 50 + 1;
-    p1.gld += Goldplus;
-    
-    cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
-    Loading();
+ 
 
-    f1.level_9 = true;
-    FinalEncounter(p1, v1, u1, e1, f1);
-
-    Goldplus = rand() % 50 + 1;
-    p1.gld += Goldplus;
-    
-    cout<<"\n>> Dostáváš "<< Goldplus <<ZLATA<<" goldů\n"<<RESET;
-    Loading();
-
-    //Vesnice
-
-    vesniceINGAME(p1, v1);
-    Loading();
-
-    //Level 10 - Final boss
-
-    f1.level_10 = true;
-    FinalEncounter(p1, v1, u1, e1, f1);
     
     cout<<"|                                                   |";
     cout<<"|                                                   |";
@@ -663,9 +663,13 @@ int main()
 void CheckStatsPlayer(Player &p1)
 {
     
-    if (p1.df > 0 && p1.DamageTake > 0 && p1.pierce == false)
+    if (p1.df > 0 && p1.DamageTake > 0)
     {
-        p1.DamageTake = p1.DamageTake / p1.df;
+
+
+    p1.DamageTake = (p1.DamageTake * 50) / (50 + p1.df); //50 = K což znamená čím vyšší je číslo, tím slabší je defense a obráceně (Utok x K) / (K + defense)
+
+        
     }
 
     if (p1.fire == true && p1.frez == true)
@@ -907,9 +911,11 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1)
         {
             if(IluzRand == 1){
                 cout<< KRYSTAL_RUZOVA <<">> Enemák dostal kvůli classe 5 poškození navíc\n\n"<<RESET;
+                e1.EnemyDamageTake += 5;
             }
             else if(IluzRand == 2){
                 cout<< KRYSTAL_RUZOVA<<">> Enemák dostal kvůli classe 10 poškození navíc\n\n"<<RESET;
+                e1.EnemyDamageTake += 10;
             }
         }
         else if (p1.Pyromancer == true)
@@ -929,6 +935,8 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1)
             if (DuelistRand == 3)
             {
                 p1.DamageTake = 0;
+                p1.DamageFinal = 0;
+                p1.Damage0 = true;
                 cout << "Útoku si se vyhnul";
             }
         }
@@ -945,11 +953,15 @@ void ClassSchopnosti(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1)
                 }
                 cout << ZELENA<<">> Útoku si se vyhnul a ještě ses vyléčil o " << p1.DamageTake << " HP\n"<<RESET;
                 p1.DamageTake = 0;
+                p1.Damage0 = true;
             }
         }
         else if (p1.Bart)
         {
         }
+
+
+        
     }
 
 void PowerFreeze(Player &p1, Vesnice &v1, char &KoupitEnchantMenu)
@@ -1337,10 +1349,10 @@ void VyberClass(Player &p1)
                 case 'W':
                 do
                 {
-                    cout << "\n| -K- Knight - Nebojácný rytíř se zakladními staty --|100 HP|20 defense|\n";
-                    cout << "| -B- Bersberker - Malý, silný, rychlý avšak málo vydrží --|60 HP|5 defense|\n";
-                    cout << "| -G- Gladiator - Obrvoský silný gladiátor, jenže za cenu rychlosti --|150 HP|35 defense|\n";
-                    cout << "| -P- Paladin - Obrovská výdrž v boji, ale útok trochu postrádá --|200 HP|50 defense|\n";
+                    cout << "\n| -K- Knight - Nebojácný rytíř se zakladními staty --|100 HP|\n";
+                    cout << "| -B- Bersberker - Malý, silný, rychlý avšak málo vydrží --|80 HP|\n";
+                    cout << "| -G- Gladiator - Obrvoský silný gladiátor, jenže za cenu rychlosti --|150 HP|\n";
+                    cout << "| -P- Paladin - Obrovská výdrž v boji, ale útok trochu postrádá --|200 HP|\n";
                     cout << "| -Z- Zpět\n\n| -> ";
                     cin >> Classa;
                     switch (Classa)
@@ -1348,15 +1360,13 @@ void VyberClass(Player &p1)
                     case 'K':
                         cout << ">> Vybral sis Knighta";
                         p1.hp = 100;
-                        p1.df = 20;
                         p1.Knight = true;
                         p1.Warrior = true;
                         OutVyber = true;
                         break;
                     case 'B':
                         cout << ">> Vybral sis Besberkra";
-                        p1.hp = 60;
-                        p1.df = 5;
+                        p1.hp = 80;
                         p1.Bersberker = true;
                         p1.Warrior = true;
                         OutVyber = true;
@@ -1364,7 +1374,6 @@ void VyberClass(Player &p1)
                     case 'G':
                         cout << ">> Vybral sis Gladiatora";
                         p1.hp = 150;
-                        p1.df = 35;
                         p1.Gladiator = true;
                         p1.Warrior = true;
                         OutVyber = true;
@@ -1372,7 +1381,6 @@ void VyberClass(Player &p1)
                     case 'P':
                         cout << ">> Vybral sis Paladina";
                         p1.hp = 200;
-                        p1.df = 50;
                         p1.Paladin = true;
                         p1.Warrior = true;
                         OutVyber = true;
@@ -1387,9 +1395,9 @@ void VyberClass(Player &p1)
             case 'R':
                 do
                 {
-                    cout << "\n| -A- Archer - Zapálený lučištník s kapkou elfský krve v sobě -- |90 HP|5 defense|\n";
-                    cout << "| -S- Sniper - Oddstrelovač s obrovskou palnou střelou skoro bez možností minout, ale dlouho přebíjí -- |80 HP|10 defense|\n";
-                    cout << "| -H- Huntsman - Lovec s pořádnout brokovnicí, ale docela gamble útok je o tom kolik toho trefí -- |110 HP|15 defense|\n";
+                    cout << "\n| -A- Archer - Zapálený lučištník s kapkou elfský krve v sobě -- |90 HP\n";
+                    cout << "| -S- Sniper - Oddstrelovač s obrovskou palnou střelou skoro bez možností minout, ale dlouho přebíjí -- |80 HP|\n";
+                    cout << "| -H- Huntsman - Lovec s pořádnout brokovnicí, ale docela gamble útok je o tom kolik toho trefí -- |110 HP|\n";
                     cout << "| -Z- Zpět\n\n| -> ";
                     cin >> Classa;
                     switch (Classa)
@@ -1397,7 +1405,6 @@ void VyberClass(Player &p1)
                     case 'A':
                         cout << ">> Vybral sis Archer";
                         p1.hp = 90;
-                        p1.df = 5;
                         p1.Archer = true;
                         p1.Ranger = true;
                         OutVyber = true;
@@ -1405,7 +1412,6 @@ void VyberClass(Player &p1)
                     case 'S':
                         cout << ">> Vybral sis Sniper";
                         p1.hp = 80;
-                        p1.df = 10;
                         p1.Sniper = true;
                         p1.Ranger = true;
                         OutVyber = true;
@@ -1413,7 +1419,6 @@ void VyberClass(Player &p1)
                     case 'H':
                         cout << ">> Vybral sis Huntsman";
                         p1.hp = 110;
-                        p1.df = 15;
                         p1.Huntsman = true;
                         p1.Ranger = true;
                         OutVyber = true;
@@ -1428,9 +1433,9 @@ void VyberClass(Player &p1)
             case 'M':
                 do
                 {
-                    cout << "\n| -S- Sorrencer - Mág všeho druhu, dokáže se naučit kterýkoli magický útok -- |100 HP|0 defense| Mana 100|\n";
-                    cout << "| -I- Iluzinosta - Tvoří iluze, který nemají za účel přímí útok, ale dostat nepřítele do stavu bezmoci -- |120 HP|0 defense| Mana 100|\n";
-                    cout << "| -P- Pyromancer - Vládce ohně, sice se nekáže naučit všechnu magii, ale má TOP ohnivou -- |100 HP|10 defense| Mana 110|\n";
+                    cout << "\n| -S- Sorrencer - Mág všeho druhu, dokáže se naučit kterýkoli magický útok -- |100 HP| Mana 100|\n";
+                    cout << "| -I- Iluzinosta - Tvoří iluze, který nemají za účel přímí útok, ale dostat nepřítele do stavu bezmoci -- |120 HP| Mana 100|\n";
+                    cout << "| -P- Pyromancer - Vládce ohně, sice se nekáže naučit všechnu magii, ale má TOP ohnivou -- |100 HP| Mana 110|\n";
                     cout << "| -Z- Zpět\n\n| -> ";
                     cin >> Classa;
                     switch (Classa)
@@ -1438,7 +1443,6 @@ void VyberClass(Player &p1)
                     case 'S':
                         cout << ">> Vybral sis Sorrencer";
                         p1.hp = 100;
-                        p1.df = 0;
                         p1.manaorigin = 100;
                         p1.Sorrencer = true;
                         p1.Mage = true;
@@ -1447,7 +1451,6 @@ void VyberClass(Player &p1)
                     case 'I':
                         cout << ">> Vybral sis Iluzionista";
                         p1.hp = 120;
-                        p1.df = 0;
                         p1.manaorigin = 100;
                         p1.Iluzionista = true;
                         p1.Mage = true;
@@ -1456,7 +1459,6 @@ void VyberClass(Player &p1)
                     case 'P':
                         cout << ">> Vybral sis Pyromancer";
                         p1.hp = 100;
-                        p1.df = 10;
                         p1.manaorigin = 110;
                         p1.Pyromancer = true;
                         p1.Mage = true;
@@ -1473,8 +1475,8 @@ void VyberClass(Player &p1)
             case 'G':
                 do
                 {
-                    cout << "\n| -A- Assasin - Pán rychlosti, spoléhá na rychlé útoky s vysokou šancí na kritický zásah -- |80 HP|5 defense|\n";
-                    cout << "| -D- Duelist - Absolutně nemožné duelistu zasáhnout, všemu se vyhne -- |70 HP|5 defense|\n";
+                    cout << "\n| -A- Assasin - Pán rychlosti, spoléhá na rychlé útoky s vysokou šancí na kritický zásah -- |80 HP|\n";
+                    cout << "| -D- Duelist - Absolutně nemožné duelistu zasáhnout, všemu se vyhne -- |70 HP|\n";
                     cout << "| -Z- Zpět\n\n| -> ";
                     cin >> Classa;
                     switch (Classa)
@@ -1482,7 +1484,6 @@ void VyberClass(Player &p1)
                     case 'A':
                         cout << ">> Vybral sis Assasin";
                         p1.hp = 80;
-                        p1.df = 5;
                         p1.Assasin = true;
                         p1.Rogue = true;
                         OutVyber = true;
@@ -1490,7 +1491,6 @@ void VyberClass(Player &p1)
                     case 'D':
                         cout << ">> Vybral sis Duelist";
                         p1.hp = 70;
-                        p1.df = 5;
                         p1.Duelist = true;
                         p1.Rogue = true;
                         OutVyber = true;
@@ -1505,8 +1505,8 @@ void VyberClass(Player &p1)
             case 'P':
                 do
                 {
-                    cout << "\n| -H- Healer - Neni až tak moc silný, ale muže být pomalu nesmrtelný -- |100 HP|5 defense| Mana 200|\n";
-                    cout << "| -B -Bart - Absolutní GOATTT, dokáže porazit final bosse pomocí hudby... respekt -- |100 HP|0 defense|\n";
+                    cout << "\n| -H- Healer - Neni až tak moc silný, ale muže být pomalu nesmrtelný -- |100 HP| Mana 200|\n";
+                    cout << "| -B -Bart - Absolutní GOATTT, dokáže porazit final bosse pomocí hudby... respekt -- |100 HP|\n";
                     cout << "| -Z- Zpět\n\n| -> ";
                     cin >> Classa;
                     switch (Classa)
@@ -1514,7 +1514,6 @@ void VyberClass(Player &p1)
                     case 'H':
                         cout << ">> Vybral sis Healer";
                         p1.hp = 100;
-                        p1.df = 5;
                         p1.manaorigin = 200;
                         p1.Healer = true;
                         p1.Priest = true;
@@ -1523,7 +1522,6 @@ void VyberClass(Player &p1)
                     case 'B':
                         cout << ">> Vybral sis Bart";
                         p1.hp = 100;
-                        p1.df = 0;
                         p1.Bart = true;
                         OutVyber = true;
                         break;
@@ -1618,7 +1616,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
         e1.hpEnemy = 100;
         e1.Enemy_Aktivni = true;
         }
-        p1.DamageTake = 30;
+        p1.DamageTake = 25;
     }
     else if(e1.SharpFeather_Harpy == true){
         if(e1.Enemy_Aktivni == false){
@@ -1686,7 +1684,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
         e1.hpEnemy = 40;
         e1.Enemy_Aktivni = true;
         }
-        p1.DamageTake = 25;
+        p1.DamageTake = 20;
         if(PoisnoRand == 2){
             p1.poison = true;
             p1.poisonTimer = 3;
@@ -1707,7 +1705,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
     else if(e1.SandStorm_Elemental == true){
         if(e1.Enemy_Aktivni == false){
         e1.speedEnemy = 70;
-        e1.hpEnemy = 60;
+        e1.hpEnemy = 30;
         e1.Enemy_Aktivni = true;
         }
         p1.DamageTake = 25;
@@ -1734,7 +1732,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
     }
     else if(e1.Relic_Guardian == true){
         if(e1.Enemy_Aktivni == false){
-        e1.speedEnemy = 50;
+        e1.speedEnemy = 15;
         e1.hpEnemy = 150;
         e1.Enemy_Aktivni = true;
         }
@@ -1764,9 +1762,7 @@ void EnemyUtok(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1){
             p1.fireTimer = 3;
         }
     }
-     else if(e1.FBOSSChronarch == true){
-        
-     }
+
      else if(e1.SecretBoss_Empres_of_Light == true){
         cout<< "||---Tak to jsi v prdeli brochacho... Neměl si ho zabíjet\n||---Good luck bráši\n";
         e1.speedEnemy = 100;
@@ -1819,6 +1815,14 @@ void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &
     CheckStatsPlayer(p1);
     e1.EnemyDamageFinal = e1.EnemyDamageTake;
     e1.EnemyDamageFinal+= p1.dmgOrigin;
+
+
+        if(p1.Damage0 == true){
+            p1.DamageFinal = 0;
+            p1.Damage0 = false;
+        }
+
+
 
 
 
@@ -1888,18 +1892,20 @@ void FinalEncounter(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &
         ManaUserRand = rand() % 3 + 1;
         if(ManaUserRand == 1){
         p1.mana += 20;
-        cout<< MODRA<<"| - Doplnilo se ti 20 many\n"<<RESET;
+        cout<< MODRA<<"| - Doplnilo se ti 20 many\n";
         }
         else if(ManaUserRand == 2){
         p1.mana += 30;
-        cout<< MODRA<<"| - Doplnilo se ti 30 many\n"<<RESET;
+        cout<< MODRA<<"| - Doplnilo se ti 30 many\n";
         }
         else if(ManaUserRand == 3){
         p1.mana += 40;
-        cout<< MODRA<<"| - Doplnilo se ti 40 many\n"<<RESET;
+        cout<< MODRA<<"| - Doplnilo se ti 40 many\n";
         }
-        else{
+        if(p1.mana > p1.manaorigin){
+            p1.mana = p1.manaorigin;
         }
+        cout<<"| - MáŠ "<<p1.mana<<" Many\n"<<RESET;
     }
 
 
@@ -2454,6 +2460,7 @@ void VyberEnemy(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1){
 
 int EnemyRand = rand() % 3 + 1;
 
+EnemyRand = rand() % 3 + 1;
 
     if(f1.level_1 == true){
         Levelfalse(f1);
@@ -2676,6 +2683,221 @@ void Enemyfalse(Enemy &e1){
     e1.FBOSSChronarch = false;
 
     e1.SecretBoss_Empres_of_Light = false;
+
+
+
+
+}
+
+void Final_boss(Player &p1, Vesnice &v1, Schopnosti &u1, Enemy &e1, FalseL &f1){
+
+
+    bool OnlyOneTimeLOL = true;
+    bool ManaUser = false;
+    int ManaUserRand;
+    bool EnemyKill = false;
+
+
+
+        if (p1.Mage == true || p1.Healer == true)
+    {
+        ManaUser = true;
+    }
+
+
+
+
+
+    e1.Enemy_Aktivni = false;
+
+    p1.speed = p1.speedorigin;
+    p1.mana = p1.manaorigin;
+    p1.hitchance = p1.hitchanceorigin;
+
+
+    Enemyfalse(e1);
+
+
+    cout<< CERVENA << "-------TVUJ FINAL BOSS JE... "<< ZELENA <<"CHRONARCH\n"<<RESET;
+    cout<< ZELENA << "\n\n| Přicházíš k poslednímu bossovi, jmenuje se Chronarch a je to strážce času, který se snaží zničit vesnici a všechny\n\n"<<RESET;
+
+        e1.speedEnemy = 20;
+        e1.hpEnemy = 200;
+        p1.DamageTake = 30;
+
+        int schopnostCounter = 0;
+        int schopnostTimer = 0;
+        int hpOriginEnemy = e1.hpEnemy;
+
+
+
+    do{
+        if(OnlyOneTimeLOL == true){
+        cout<<"| << Enemy má "<< e1.hpEnemy<<" hp\n";
+        cout<<"| << Enemy dává " <<p1.DamageTake<<" damage\n";
+        cout<<"| << Rychlost Enemy: " <<e1.speedEnemy<<"\n\n";
+        OnlyOneTimeLOL = false;
+        }
+    PlayerUtok(p1,v1,u1,e1);
+    ClassSchopnosti(p1, v1, u1, e1);
+    CheckStatsPlayer(p1);
+    e1.EnemyDamageFinal = e1.EnemyDamageTake;
+    e1.EnemyDamageFinal+= p1.dmgOrigin;
+
+
+
+
+    EnemyKill = false;
+    
+  if(e1.EnemyDamageFinal > 0 || p1.DamageFinal > 0){  
+    if(e1.speedEnemy > p1.speed){
+    cout<< CERVENA<<"\n|-----Menší speed-----|"<<RESET;
+    
+        if(p1.DamageFinal > 0){
+            p1.hpBattle -= p1.DamageFinal;
+   
+            cout<< "\n| - Enemák ti dal " << p1.DamageFinal << " poškození\n";
+            cout<< "| - Máš " << p1.hpBattle << " hp\n\n";
+        }
+        if (p1.hpBattle <= 0)
+        {
+            p1.hp = 0;
+            cout << "Tady tvoje cesta končí... Došli ti životy";
+            exit(0);
+        }
+
+        if (e1.EnemyDamageFinal > 0){
+            e1.hpEnemy -= e1.EnemyDamageFinal;
+            cout<< "\n| - Dáváš enemákovi " << e1.EnemyDamageFinal << " poškození\n";
+            if(e1.hpEnemy < 0){
+                e1.hpEnemy = 0;
+            }
+            cout<< "| - Enemák má " << e1.hpEnemy << " hp\n\n";
+        }
+    }
+
+    else if (e1.speedEnemy <= p1.speed){
+    cout<< MODRA<<"\n|-----Větsi speed-----|"<<RESET;
+            if(e1.EnemyDamageFinal > 0){
+            e1.hpEnemy -= e1.EnemyDamageFinal;
+            if(e1.hpEnemy < 0){
+                e1.hpEnemy = 0;
+            }
+            cout<< "\n| - Dáváš enemákovi " << e1.EnemyDamageFinal << " poškození\n";
+            if(e1.hpEnemy <= 0){
+                e1.hpEnemy = 0;
+                EnemyKill = true;
+            }
+            cout<< "| - Enemák má " << e1.hpEnemy << " hp\n\n";
+        }
+
+        if(EnemyKill == false){
+
+            if(p1.DamageFinal > 0){
+                p1.hpBattle -= p1.DamageFinal;
+    
+                cout<< "\n| - Enemák ti dal " << p1.DamageFinal << " poškození\n";
+                cout<< "| - Máš " << p1.hpBattle << " hp\n\n";
+            }
+        }
+        if (p1.hpBattle <= 0)
+        {
+            p1.hp = 0;
+            cout << "Tady tvoje cesta končí... Došli ti životy";
+            exit(0);
+        }
+    }
+}
+    if(ManaUser == true){
+        ManaUserRand = rand() % 3 + 1;
+        if(ManaUserRand == 1){
+        p1.mana += 20;
+        cout<< MODRA<<"| - Doplnilo se ti 20 many\n"<<RESET;
+        }
+        else if(ManaUserRand == 2){
+        p1.mana += 30;
+        cout<< MODRA<<"| - Doplnilo se ti 30 many\n"<<RESET;
+        }
+        else if(ManaUserRand == 3){
+        p1.mana += 40;
+        cout<< MODRA<<"| - Doplnilo se ti 40 many\n"<<RESET;
+        }
+        else{
+        }
+    }
+
+    if(schopnostTimer == 5){
+        schopnostCounter += 1;
+        schopnostTimer = 0;
+        e1.hpEnemy += (20*schopnostCounter);
+        cout<< ZELENA<<"| - Schopnost se aktivovala, Chronarovi se doplnilo " << 20*schopnostCounter << " hp\n"<<RESET;
+    }
+    schopnostTimer += 1;
+
+
+        
+
+
+
+
+
+
+        if (e1.hpEnemy <= 0)
+        {
+            e1.hpEnemy = 0;
+            cout << "Vítězíš, ber goldy a pokračuj dál";
+            Enemyfalse(e1);
+
+            e1.EnemyBlind = false;
+            e1.EnemyBlindTimer = 0;
+
+            e1.EnemyConf = false;
+            e1.EnemyConfTimer = 0;
+
+            e1.EnemyFire = false;
+            e1.EnemyFireTimer = 0;
+
+            e1.EnemyFire = false;
+            e1.EnemyFireTimer = 0;
+        }
+    }while(e1.hpEnemy>0);
+    }
+
+void Level_system(Player &p1){
+
+    int XPRand = rand() % 10 + 1;
+    int LVLupgrade = rand() % 3 + 1;
+
+
+    cout<< ">> získal jsi "<<XPRand<<" XP\n\n";
+    p1.xp += XPRand;
+    do{
+    if(p1.xp >=10){
+        p1.lvl ++;
+        p1.xp -= 10;
+        cout<< MODRA<<"Dal jsi LEVEL UP... GRATULUJU\n\n";
+
+        switch(LVLupgrade){
+            case 1:
+                cout<< "<< Za LEVEL UP jsi dostal 20 max životů\n";
+                p1.hp += 20;
+                p1.hpBattle += 20;
+
+                break;
+            case 2:
+                cout<< "<< Za LEVEL UP jsi dostal 4 dmg\n";
+                p1.dmgOrigin += 4;
+                break;
+            case 3:
+                cout<< "<< Za LEVEL UP jsi dostal 4"<<"%"<<" crit chance\n";
+            p1.crit += 4;
+                break;
+        }
+    }
+    }while(p1.xp>=10);
+
+    cout<<RESET<<"| - Tvůj LEVEL je: "<<p1.lvl<<endl;
+    cout<< "| - Máš: "<<p1.xp<<" XP"<<endl<<RESET;
 
 
 
